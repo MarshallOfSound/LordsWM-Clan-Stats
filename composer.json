@@ -1,0 +1,6 @@
+{
+  "require": {
+    "tburry/pquery": "dev-master",
+    "slim/slim": "2.6.2"
+  }
+}
