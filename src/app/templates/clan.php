@@ -191,13 +191,15 @@
     <script>
         var CLAN_ID = <?php echo $clan->getID() ?>;
         $.material.init();
-        $('#clanTable').DataTable();
+        $('#clanTable').DataTable({
+            "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ]
+        });
         $('#compare').click(function() {
             var modal = $(this).closest('.modal'),
                 select1 = modal.find('select:eq(0)').val(),
                 select2 = modal.find('select:eq(1)').val();
 
-            window.location = '/clan/' + CLAN_ID + '/compare/' + select1 + '/' + select2;
+            window.location = '/clan/' + CLAN_ID + '/compare/' + Math.min(select1, select2) + '/' + Math.max(select1, select2);
         });
         $('#choose').click(function() {
             var modal = $(this).closest('.modal'),
