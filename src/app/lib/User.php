@@ -28,7 +28,11 @@ class User {
 
     public function getName() {
         preg_match_all("/'sms-create.php\?mailto=(.+?)'/", $this->content, $output_array);
-        return $output_array[1][0];
+        $name = $output_array[1][0];
+        if(preg_match('/[^\x20-\x7f]/', $name)) {
+            $name = "Russian Name";
+        }
+        return $name;
     }
 
     public function getXP() {

@@ -17,12 +17,55 @@ function execInBackground($cmd) {
 }
 
 $app->get('/', function() {
-    echo "Nothing to see here";
+    include TEMPLATE_DIR . "/home.php";
+});
+
+$app->group('/clan/:id', function() use ($app) {
+    $app->get('(/view/:number)', function($id, $number = null) use ($app) {
+        $check = mysqli_query(\LWM\DB::$conn, "SELECT * FROM `clans` WHERE `id`=$id");
+        if (mysqli_num_rows($check) == 1) {
+            $row = mysqli_fetch_assoc($check);
+            $clanID = $row["lwm_id"];
+        } else {
+            $app->redirect('/');
+        }
+        $clan = (new \LWM\Clan($clanID, false));
+        if ($number == null) {
+            $scans = $clan->latestScan();
+            $viewing = "Latest Scan";
+        } else {
+            $scans = $clan->getScan($number);
+            $viewing = $clan->getScanDate($number);
+        }
+        include TEMPLATE_DIR . "/clan.php";
+    });
+
+    $app->get('/compare/:number/:number2', function($id, $number1, $number2) use ($app) {
+        $check = mysqli_query(\LWM\DB::$conn, "SELECT * FROM `clans` WHERE `id`=$id");
+        if (mysqli_num_rows($check) == 1) {
+            $row = mysqli_fetch_assoc($check);
+            $clanID = $row["lwm_id"];
+        } else {
+            $app->redirect('/');
+        }
+        $clan = (new \LWM\Clan($clanID, false));
+
+        $scans = $clan->generateDifference($number1, $number2);
+        $viewing = $clan->getScanDate($number1) . " - " . $clan->getScanDate($number2);
+        include TEMPLATE_DIR . "/clan.php";
+    });
 });
 
 $app->group('/rest', function() use ($app) {
-    $app->get('/crawl/:clan', function($clan) {
-        execInBackground('php app/fetcher/fetch_clan.php ' . $clan);
+    $app->group('/crawl', function() use ($app) {
+        $app->get('/:clan', function($clan) {
+            execInBackground('php app/fetcher/fetch_clan.php ' . $clan);
+        });
+
+        $app->get('/:clan/status', function($clan) {
+            $clan = new \LWM\Clan($clan, false);
+            echo $clan->scanProgress();
+        });
     });
 });
 
