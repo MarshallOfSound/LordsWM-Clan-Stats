@@ -59,7 +59,18 @@ $app->group('/clan/:id', function() use ($app) {
 $app->group('/rest', function() use ($app) {
     $app->group('/crawl', function() use ($app) {
         $app->get('/:clan', function($clan) {
-            execInBackground('php app/fetcher/fetch_clan.php ' . $clan);
+            $clanID = $clan;
+            $clan = new \LWM\Clan($clan, false);
+            if ($clan->scanProgress() == "0") {
+                $check = mysqli_query(\LWM\DB::$conn, "SELECT * FROM `mass_crawls` WHERE DATE(`timestamp`) = DATE(CURRENT_TIMESTAMP)");
+                if (mysqli_num_rows($check) == 0) {
+                    execInBackground('php app/fetcher/fetch_clan.php ' . $clanID);
+                } else {
+                    echo "Already scanned today";
+                }
+            } else {
+                echo "Scan already in progress";
+            }
         });
 
         $app->get('/:clan/status', function($clan) {
