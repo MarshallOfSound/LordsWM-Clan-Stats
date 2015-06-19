@@ -154,9 +154,11 @@ class Clan {
         mysqli_query($conn, "INSERT INTO `mass_crawls` (`clan`, `members`) VALUES ($clanID, $mems)");
 
         $insert = mysqli_insert_id($conn);
+        $path = dirname(dirname(__FILE__));
         foreach ($this->getMemberIds() as $id) {
             while (mysqli_num_rows(mysqli_query(DB::$conn, "SELECT * FROM `crawls` JOIN `users` ON `users`.`id`=`crawls`.`user` WHERE `crawl`=$insert AND `users`.`lwm_id`=$id")) == 0) {
-                shell_exec("php app/fetcher/fetch_user.php " . $id . " " . $clanID . " " . $insert);
+                //shell_exec("php app/fetcher/fetch_user.php " . $id . " " . $clanID . " " . $insert);
+                echo shell_exec("php $path/fetcher/fetch_user.php " . $id . " " . $clanID . " " . $insert);
             }
         }
     }

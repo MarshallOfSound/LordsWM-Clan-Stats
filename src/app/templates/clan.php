@@ -209,7 +209,7 @@
         });
 
         function checkScan() {
-            $.ajax('/rest/crawl/7705/status', {
+            $.ajax('http://status.clanstats.samuelattard.com/rest/crawl/7705/status', {
                 method: 'GET',
                 success: function(data) {
                     if (data === '0') {
