@@ -37,7 +37,7 @@ class User {
 
     public function getXP() {
         preg_match_all("/<b>Combat level: [0-9]+<\/b> \(([0-9]+.*?)\)/", $this->content, $output_array);
-        return $output_array[1][0];
+        return str_replace(',', '', $output_array[1][0]);
     }
 
     public function getLevel() {
