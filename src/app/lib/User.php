@@ -36,12 +36,12 @@ class User {
     }
 
     public function getXP() {
-        preg_match_all("/<b>Combat level: [0-9]+<\/b> \(([0-9]+?)\)/", $this->content, $output_array);
+        preg_match_all("/<b>Combat level: [0-9]+<\/b> \(([0-9]+.*?)\)/", $this->content, $output_array);
         return $output_array[1][0];
     }
 
     public function getLevel() {
-        preg_match_all("/<b>Combat level: ([0-9]+)<\/b> \(([0-9]+?)\)/", $this->content, $output_array);
+        preg_match_all("/<b>Combat level: ([0-9]+)<\/b> \(([0-9]+.*?)\)/", $this->content, $output_array);
         return $output_array[1][0];
     }
 
@@ -93,22 +93,22 @@ class User {
     }
 
     public function getBattlesWon() {
-        preg_match_all("/<td width=(?:'|\")40%(?:'|\")>&nbsp;&nbsp;Victories: <b>([0-9]+?)<\/b><\/td>/", $this->content, $output_array);
+        preg_match_all("/<td width=(?:'|\")[0-9]0%(?:'|\")>&nbsp;&nbsp;Victories:.+?<b>([0-9]+.+?)<\/b><\/td>/", $this->content, $output_array);
         return intval(str_replace(',', '', $output_array[1][0]));
     }
 
     public function getBattlesLost() {
-        preg_match_all("/<td width=(?:'|\")40%(?:'|\")>&nbsp;&nbsp;Defeats: <b>([0-9]+?)<\/b><\/td>/", $this->content, $output_array);
+        preg_match_all("/<tr><td width=(?:'|\")[0-9]0%(?:'|\")>&nbsp;&nbsp;Defeats:.+?<b>([0-9]+.+?)<\/b><\/td>/", $this->content, $output_array);
         return intval(str_replace(',', '', $output_array[1][0]));
     }
 
     public function getTavernLost() {
-        preg_match_all("/<td width=(?:'|\")30%(?:'|\")>&nbsp;&nbsp;Victories: <b>([0-9]+?)<\/b><\/td>/", $this->content, $output_array);
+        preg_match_all("/<\/td><td width=(?:'|\")[0-9]0%(?:'|\")>&nbsp;&nbsp;Defeats:.+?<b>([0-9]+.+?)<\/b><\/td>/", $this->content, $output_array);
         return intval(str_replace(',', '', $output_array[1][0]));
     }
 
     public function getTavernWon() {
-        preg_match_all("/<td width=(?:'|\")30%(?:'|\")>&nbsp;&nbsp;Defeats: <b>([0-9]+?)<\/b><\/td>/", $this->content, $output_array);
+        preg_match_all("/<td>&nbsp;&nbsp;Victories:.+?<b>([0-9]+.+?)<\/b><\/td>/", $this->content, $output_array);
         return intval(str_replace(',', '', $output_array[1][0]));
     }
 
